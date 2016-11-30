@@ -9,21 +9,24 @@ const cars = [
 		model: '328i',
 		style: 'Wagon',
 		year: '2009',
-		color: 'Light Blue'
+		color: 'Light Blue',
+		price: '$16,000'
 	},
 	{
 		make: 'Honda',
 		model: 'Accord',
 		style: 'Sedan',
 		year: '1987',
-		color: 'Blue'
+		color: 'Blue',
+		price: '$500'
 	},
 	{
 		make: 'Subaru',
 		model: 'Loyale',
 		style: 'Wagon',
 		year: '1993',
-		color: 'Blue'
+		color: 'Blue',
+		price: '$12,000'
 	}
 ]
 
@@ -54,8 +57,33 @@ class CarTable extends React.Component {
 
 class ColorTool extends React.Component {
 	
+	constructor(props) {
+		super(props);
+		this.state = {
+			newColor: ''
+		};
+		this.onChange = this.onChange.bind(this);
+		this.onClick = this.onClick.bind(this);
+	}
+
+	onChange(e) {
+		console.log('render');
+		this.setState({
+			newColor: e.target.value
+		});
+	}
+
+	onClick(e) {
+		e.preventDefault();
+		console.log('click')
+	}
 	
 	render() {
+
+
+		const onChange = this.onChange;
+		const onClick = this.onClick;
+		const newColor = this.state.newColor;
 		
 		return <div>
 			<header>
@@ -64,11 +92,16 @@ class ColorTool extends React.Component {
 			<ul>
 				{this.props.colors.map((v,i) => <li key={i}>{v}</li>)}
 			</ul>
+			<form>
+				<label>New Color:</label>
+				<input type="text" onChange={onChange} value={newColor} />
+				<button type="text" onClick={onClick}>Add Color</button>
+			</form>
 		</div>;
 	}
 	
 }
 
-// ReactDOM.render(<ColorTool colors={colors} toolHeader="Color List!!!" />, document.querySelector('my-app'));
+ReactDOM.render(<ColorTool colors={colors} toolHeader="Color List!!!" />, document.querySelector('my-app'));
 
 ReactDOM.render(<CarTable cars={cars} />, document.querySelector('cars-app'));
