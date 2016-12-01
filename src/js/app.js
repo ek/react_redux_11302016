@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import CarTableHeader from 'car-table-header';
 import CarTable from 'car-table';
+import CarForm from 'car-form';
 
 const colors = ['red','gold','green','white','black','blue','saffron'];
 
@@ -87,70 +88,37 @@ const cars = [
 
 
 class CarTool extends React.Component {
-	
 	constructor(props) {
 		super(props);
+		let state = {
+			cars: this.props.cars
+		};
+		this.state = state;
+		this.onAddCar = this.onAddCar.bind(this);
+		this.config = Object.assign({},
+			this.props.config,
+			{
+				keys: this.props.config.fields.map(field=>field['key']),
+				labels: this.props.config.fields.map(field=>field['label']),
+				placeholders: this.props.config.fields.map(field=>field['placeholder'])
+			});
+	}
+	
+	onAddCar(newCar) {
+		this.state.cars.push(newCar);
+		this.setState(this.state);
+		console.log(this.state);
 	}
 
-	
 	render() {
+		this.state = this.state;
 		return <div>
 			<CarTableHeader headerText="A Table of Cars"></CarTableHeader>
-				<form>
-					<CarTable cars={this.props.cars} config={this.props.config}></CarTable>
-				</form>
-			</div>
-	}
-
-}
-
-class NewCarInputRow extends React.Component {
-	
-	constructor(props) {
-		super(props);
-
-		this.keys = props.keys;
-		this.labels = props.labels;
-		this.placeholders = props.placeholders;
-		this.state = {};
-		const s = this.state;
-		console.log(this.state);
-		this.keys.forEach(function(k) {
-			s[k] = "";
-		});
-
-		this.onChange = this.onChange.bind(this);
-		this.onClick = this.onClick.bind(this);
-	}
-
-	onClick() {
-		console.log('onClick asdf');
-	}
-	
-	onChange() {
-		console.log('on chaaaange');
-	}
-
-	render() {
-		let state = this.state;
-		let onChange = this.onChange;
-		let onClick = this.onClick;
-		return <tr>
-						{this.keys.map((keyName,i) => 
-							<td key={i}>
-								<input 
-									type="text" 
-									name={keyName} 
-									onChange={onChange} 
-									value={state[keyName]} 
-									placeholder={state[keyName]} />
-							</td>
-						)}
-						<td>
-							<button type="text" onClick={onClick}>Add Car</button>
-						</td>
-					</tr>
+			<CarTable cars={this.state.cars} config={this.config}></CarTable>
+			<CarForm config={this.config} onAddCar={this.onAddCar}></CarForm>
+		</div>
 	}
 }
+
 
 ReactDOM.render(<CarTool cars={cars} config={config} />, document.querySelector('cars-app'));

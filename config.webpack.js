@@ -34,7 +34,10 @@ module.exports = {
       // this enables support for ES2017 and earlier including modules
       {
         test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader',
-				query: { presets: [ 'react', 'latest' ] }
+				query: { 
+          presets: [ 'react', 'latest' ],
+          plugins: [ 'transform-class-properties']
+        }
       },
       // processes JSON files, useful for config files and mock data
       { test: /\.json$/, loader: 'json' },
