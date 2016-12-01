@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import CarTableHeader from 'car-table-header';
 
 const colors = ['red','gold','green','white','black','blue','saffron'];
 
@@ -81,15 +82,32 @@ const cars = [
 	}
 ]
 
-class CarTable extends React.Component {
-	
-	constructor(props) {
-		super(props);
 
+
+class CarTableHeadRow extends React.Component {
+	render() {
+		return <thead>
+							<tr>
+								{this.props.labels.map((label,i)=> <th key={i}>{(label)}</th>)}
+								<td>&nbsp;</td>
+							</tr>
+						</thead>
+	}
+}
+
+CarTableHeadRow.propTypes = {
+	labels: React.PropTypes.array
+}
+
+
+class CarTable extends React.Component {
+	constructor(props) {
+		super(props)
+		
 		this.keys = this.props.config.fields.map(field=>field['key']);
 		this.labels = this.props.config.fields.map(field=>field['label']);
 		this.placeholders = this.props.config.fields.map(field=>field['placeholder']);
-		
+
 		this.onChange = this.onChange.bind(this);
 	}
 
@@ -103,35 +121,35 @@ class CarTable extends React.Component {
 	}
 	
 	render() {
+		return <table className="table">
+						<CarTableHeadRow labels={this.labels}></CarTableHeadRow>
+						<tbody>
+							{this.props.cars.map((car,i)=>
+								<tr key={i}>
+									{this.keys.map((carKey,j) => <td key={j}>{car[carKey]}</td>)}
+									<td>&nbsp;</td>
+								</tr>
+							)}
+						</tbody>
+					</table>
+	}
+}
 
-		const onChange = this.onChange;
-		const onClick = this.onClick;
-		const state = this.state;
 
-		return <form>
-				<table className="table">
-					<thead>
-						<tr>
-							{this.labels.map((label,i)=> <th key={i}>{(label)}</th>)}
-							<td>&nbsp;</td>
-						</tr>
-					</thead>
-					<tbody>
-						{this.props.cars.map((car,i)=>
-							<tr key={i}>
-								{this.keys.map((carKey,j) => <td key={j}>{car[carKey]}</td>)}
-								<td>&nbsp;</td>
-							</tr>
-						)}
-						<NewCarInputRow 
-							keys={this.keys} 
-							labels={this.labels} 
-							placeholders={this.placeholders}></NewCarInputRow>
-					</tbody>
-					
-				</table>
-			</form>
-			
+class CarTool extends React.Component {
+	
+	constructor(props) {
+		super(props);
+	}
+
+	
+	render() {
+		return <div>
+			<CarTableHeader headerText="A Table of Cars"></CarTableHeader>
+				<form>
+					<CarTable cars={this.props.cars} config={this.props.config}></CarTable>
+				</form>
+			</div>
 	}
 
 }
@@ -185,4 +203,4 @@ class NewCarInputRow extends React.Component {
 	}
 }
 
-ReactDOM.render(<CarTable cars={cars} config={config} />, document.querySelector('cars-app'));
+ReactDOM.render(<CarTool cars={cars} config={config} />, document.querySelector('cars-app'));
