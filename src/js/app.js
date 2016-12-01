@@ -3,105 +3,186 @@ import ReactDOM from 'react-dom';
 
 const colors = ['red','gold','green','white','black','blue','saffron'];
 
+const config = {
+	fields: [
+		{
+			key: 'id',
+			label: 'ID',
+			placeHolder: 'ID'
+		},
+		{
+			key: 'make',
+			label: 'Make',
+			placeHolder: 'Car Company'
+		},
+		{
+			key: 'model',
+			label: 'Model',
+			placeHolder: 'Car model'
+		},
+		{
+			key: 'style',
+			label: 'Style',
+			placeHolder: 'Sedan, Wagon, Van, Truck'
+		},
+		{
+			key: 'year',
+			label: 'Year',
+			placeHolder: 'Year of production'
+		},
+		{
+			key: 'color',
+			label: 'Color',
+			placeHolder: 'Exterior color'
+		},
+		{
+			key: 'price',
+			label: 'Price',
+			placeHolder: 'Price in USD'
+		},
+		{
+			key: 'condition',
+			label: 'Condition',
+			placeHolder: 'New, Good, Fair, Poor'
+		}
+	]
+};
+
 const cars = [
 	{
+		id: 1,
 		make: 'BMW',
 		model: '328i',
 		style: 'Wagon',
 		year: '2009',
 		color: 'Light Blue',
-		price: '$16,000'
+		price: '$16,000',
+		condition: 'Like New'
 	},
 	{
+		id: 2,
 		make: 'Honda',
 		model: 'Accord',
 		style: 'Sedan',
 		year: '1987',
 		color: 'Blue',
-		price: '$500'
+		price: '$500',
+		condition: 'Good'
 	},
 	{
+		id: 3,
 		make: 'Subaru',
 		model: 'Loyale',
 		style: 'Wagon',
 		year: '1993',
 		color: 'Blue',
-		price: '$12,000'
+		price: '$12,000',
+		condition: 'Poor'
 	}
 ]
 
 class CarTable extends React.Component {
-
-	render() {
-
-		var keys = Object.keys(this.props.cars[0])
-		var keysUpperCase = keys.map(v=>v.toUpperCase())
-
-		return <table className="table">
-				<thead>
-					<tr>
-						{keysUpperCase.map((v,i)=> <th key={i}>{(v)}</th>)}
-					</tr>
-				</thead>
-				<tbody>
-					{this.props.cars.map((v,i)=>
-						<tr key={i}>
-							{keys.map((k,j) => <td key={j}>{v[k]}</td>)}
-						</tr>
-					)}
-				</tbody>
-			</table>
-	}
-
-}
-
-class ColorTool extends React.Component {
 	
 	constructor(props) {
 		super(props);
-		this.state = {
-			newColor: ''
-		};
+
+		this.keys = this.props.config.fields.map(field=>field['key']);
+		this.labels = this.props.config.fields.map(field=>field['label']);
+		this.placeholders = this.props.config.fields.map(field=>field['placeholder']);
+		
 		this.onChange = this.onChange.bind(this);
-		this.onClick = this.onClick.bind(this);
 	}
 
 	onChange(e) {
 		console.log('render');
 		this.setState({
-			newColor: e.target.value
+			newCar: {
+				[e.target.name]: e.target.value
+			}
 		});
-	}
-
-	onClick(e) {
-		e.preventDefault();
-		console.log('click')
 	}
 	
 	render() {
 
-
 		const onChange = this.onChange;
 		const onClick = this.onClick;
-		const newColor = this.state.newColor;
-		
-		return <div>
-			<header>
-				<h1 className='dude'>{this.props.toolHeader}</h1>
-			</header>
-			<ul>
-				{this.props.colors.map((v,i) => <li key={i}>{v}</li>)}
-			</ul>
-			<form>
-				<label>New Color:</label>
-				<input type="text" onChange={onChange} value={newColor} />
-				<button type="text" onClick={onClick}>Add Color</button>
+		const state = this.state;
+
+		return <form>
+				<table className="table">
+					<thead>
+						<tr>
+							{this.labels.map((label,i)=> <th key={i}>{(label)}</th>)}
+							<td>&nbsp;</td>
+						</tr>
+					</thead>
+					<tbody>
+						{this.props.cars.map((car,i)=>
+							<tr key={i}>
+								{this.keys.map((carKey,j) => <td key={j}>{car[carKey]}</td>)}
+								<td>&nbsp;</td>
+							</tr>
+						)}
+						<NewCarInputRow 
+							keys={this.keys} 
+							labels={this.labels} 
+							placeholders={this.placeholders}></NewCarInputRow>
+					</tbody>
+					
+				</table>
 			</form>
-		</div>;
+			
 	}
-	
+
 }
 
-ReactDOM.render(<ColorTool colors={colors} toolHeader="Color List!!!" />, document.querySelector('my-app'));
+class NewCarInputRow extends React.Component {
+	
+	constructor(props) {
+		super(props);
 
-ReactDOM.render(<CarTable cars={cars} />, document.querySelector('cars-app'));
+		this.keys = props.keys;
+		this.labels = props.labels;
+		this.placeholders = props.placeholders;
+		this.state = {};
+		const s = this.state;
+		console.log(this.state);
+		this.keys.forEach(function(k) {
+			s[k] = "";
+		});
+
+		this.onChange = this.onChange.bind(this);
+		this.onClick = this.onClick.bind(this);
+	}
+
+	onClick() {
+		console.log('onClick asdf');
+	}
+	
+	onChange() {
+		console.log('on chaaaange');
+	}
+
+	render() {
+		let state = this.state;
+		let onChange = this.onChange;
+		let onClick = this.onClick;
+		return <tr>
+						{this.keys.map((keyName,i) => 
+							<td key={i}>
+								<input 
+									type="text" 
+									name={keyName} 
+									onChange={onChange} 
+									value={state[keyName]} 
+									placeholder={state[keyName]} />
+							</td>
+						)}
+						<td>
+							<button type="text" onClick={onClick}>Add Car</button>
+						</td>
+					</tr>
+	}
+}
+
+ReactDOM.render(<CarTable cars={cars} config={config} />, document.querySelector('cars-app'));
