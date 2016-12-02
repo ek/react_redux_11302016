@@ -1,91 +1,63 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { config, cars } from 'config';
+import { CarTableHeader } from 'car-table-header';
+import { CarTable } from 'car-table';
+import { CarForm } from 'car-form';
 
-class ColorEditListItem extends React.Component {
-
+class CarTool extends React.Component {
 	constructor(props) {
 		super(props);
-
-		this.state = this.createState(props);
-	}
-
-	createState(props) {
-		return {
-			color: props.color
+		let state = {
+			cars: this.props.cars
 		};
-	}
-
-	componentWillReceiveProps(nextProps) {
-		console.log('getting new props');
-		console.dir(arguments);
-
-		this.setState(this.createState(nextProps));
-	}
-
-	onChange = e => {
-		this.setState({
-			color: e.target.value
-		});
-	};
-
-	render() {
-		return <li>
-			<input type="text" onChange={this.onChange} value={this.state.color} />
-		</li>;
-	}
-
-}
-
-ColorEditListItem.propTypes = {
-	color: React.PropTypes.string
-};
-
-class ColorList extends React.Component {
-
-	constructor(props) {
-		super(props);
-
-		this.state = {
-			colors: this.props.colors.concat()
-		};
-	}
-
-	componentDidMount() {
-
-		setTimeout(() => {
-			this.setState({
-				colors: this.state.colors.slice(1)
+		this.showForm = false;
+		this.state = state;
+		this.onAddCar = this.onAddCar.bind(this);
+		this.onAddButtonClick = this.onAddButtonClick.bind(this);
+		this.config = Object.assign({},
+			this.props.config,
+			{
+				keys: this.props.config.fields.map(field=>field['key']),
+				labels: this.props.config.fields.map(field=>field['label']),
+				placeholders: this.props.config.fields.map(field=>field['placeholder'])
 			});
-		}, 3000);
-
 	}
-
+	onAddCar(newCar) {
+		this.state.cars.push(newCar);
+		this.setState(this.state);
+		this.switchMode();
+	}
+	onAddButtonClick(e) {
+		console.log(e);
+		this.switchMode();
+	}
+	switchMode() {
+		let newShowForm = !this.state.showForm;
+		this.setState({
+			showForm: newShowForm	
+		});
+	}
 	render() {
-
-		// no key, and the element is not mapped to the data which cause problems
-		// for state values in child components
-		// index key, is the same as no key, but the message goes away
-		// key should be a unique value from the data, and causes the data to
-		// to be linked to the element
-
-		return <ul>
-			{this.state.colors.map((color, index) => <ColorEditListItem key={index} color={color} />)}
-		</ul>;
-
+		this.state = this.state;
+		let view = null;
+		console.log(this.state.showForm)
+		if(this.state.showForm) {
+			view = <div>
+					
+					<CarForm config={this.config} onAddCar={this.onAddCar}></CarForm>
+				</div>
+		} else {
+			view = <div>
+					<CarTable cars={this.state.cars} config={this.config}></CarTable>
+					<button type="text" onClick={this.onAddButtonClick}>Add Car</button>
+				</div>
+		}
+		return <div>
+				<CarTableHeader headerText="A Table of Cars"></CarTableHeader>
+				{view}
+			</div>
 	}
-
 }
 
-ColorList.propTypes = {
-	colors: React.PropTypes.array
-};
-
-
-
-const colorList = ['red','gold','green','white','black','blue','saffron'];
-
-ReactDOM.render(<ColorList colors={colorList} />, document.querySelector('my-app'));
-
-
-
-
+ReactDOM.render(<CarTool cars={cars} config={config} />, document.querySelector('cars-app'));
