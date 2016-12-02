@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-export default class CarTableHeadRow extends React.Component {
+export class CarTableHeadRow extends React.Component {
 	render() {
 		return <thead>
 							<tr>

@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import CarTableHeadRow from 'car-table-head-row';
-export default class CarTable extends React.Component {
+import { CarTableHeadRow } from 'car-table-head-row';
+
+export class CarTable extends React.Component {
 	constructor(props) {
 		super(props)
 		this.onChange = this.onChange.bind(this);

@@ -1,91 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import CarTableHeader from 'car-table-header';
-import CarTable from 'car-table';
-import CarForm from 'car-form';
-
-const colors = ['red','gold','green','white','black','blue','saffron'];
-
-const config = {
-	fields: [
-		{
-			key: 'id',
-			label: 'ID',
-			placeHolder: 'ID'
-		},
-		{
-			key: 'make',
-			label: 'Make',
-			placeHolder: 'Car Company'
-		},
-		{
-			key: 'model',
-			label: 'Model',
-			placeHolder: 'Car model'
-		},
-		{
-			key: 'style',
-			label: 'Style',
-			placeHolder: 'Sedan, Wagon, Van, Truck'
-		},
-		{
-			key: 'year',
-			label: 'Year',
-			placeHolder: 'Year of production'
-		},
-		{
-			key: 'color',
-			label: 'Color',
-			placeHolder: 'Exterior color'
-		},
-		{
-			key: 'price',
-			label: 'Price',
-			placeHolder: 'Price in USD'
-		},
-		{
-			key: 'condition',
-			label: 'Condition',
-			placeHolder: 'New, Good, Fair, Poor'
-		}
-	]
-};
-
-const cars = [
-	{
-		id: 1,
-		make: 'BMW',
-		model: '328i',
-		style: 'Wagon',
-		year: '2009',
-		color: 'Light Blue',
-		price: '$16,000',
-		condition: 'Like New'
-	},
-	{
-		id: 2,
-		make: 'Honda',
-		model: 'Accord',
-		style: 'Sedan',
-		year: '1987',
-		color: 'Blue',
-		price: '$500',
-		condition: 'Good'
-	},
-	{
-		id: 3,
-		make: 'Subaru',
-		model: 'Loyale',
-		style: 'Wagon',
-		year: '1993',
-		color: 'Blue',
-		price: '$12,000',
-		condition: 'Poor'
-	}
-]
-
-
-
+import { config, cars } from 'config';
+import { CarTableHeader } from 'car-table-header';
+import { CarTable } from 'car-table';
+import { CarForm } from 'car-form';
 
 class CarTool extends React.Component {
 	constructor(props) {
@@ -93,8 +11,10 @@ class CarTool extends React.Component {
 		let state = {
 			cars: this.props.cars
 		};
+		this.showForm = false;
 		this.state = state;
 		this.onAddCar = this.onAddCar.bind(this);
+		this.onAddButtonClick = this.onAddButtonClick.bind(this);
 		this.config = Object.assign({},
 			this.props.config,
 			{
@@ -103,22 +23,41 @@ class CarTool extends React.Component {
 				placeholders: this.props.config.fields.map(field=>field['placeholder'])
 			});
 	}
-	
 	onAddCar(newCar) {
 		this.state.cars.push(newCar);
 		this.setState(this.state);
-		console.log(this.state);
+		this.switchMode();
 	}
-
+	onAddButtonClick(e) {
+		console.log(e);
+		this.switchMode();
+	}
+	switchMode() {
+		let newShowForm = !this.state.showForm;
+		this.setState({
+			showForm: newShowForm	
+		});
+	}
 	render() {
 		this.state = this.state;
+		let view = null;
+		console.log(this.state.showForm)
+		if(this.state.showForm) {
+			view = <div>
+					
+					<CarForm config={this.config} onAddCar={this.onAddCar}></CarForm>
+				</div>
+		} else {
+			view = <div>
+					<CarTable cars={this.state.cars} config={this.config}></CarTable>
+					<button type="text" onClick={this.onAddButtonClick}>Add Car</button>
+				</div>
+		}
 		return <div>
-			<CarTableHeader headerText="A Table of Cars"></CarTableHeader>
-			<CarTable cars={this.state.cars} config={this.config}></CarTable>
-			<CarForm config={this.config} onAddCar={this.onAddCar}></CarForm>
-		</div>
+				<CarTableHeader headerText="A Table of Cars"></CarTableHeader>
+				{view}
+			</div>
 	}
 }
-
 
 ReactDOM.render(<CarTool cars={cars} config={config} />, document.querySelector('cars-app'));
