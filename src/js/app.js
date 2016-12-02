@@ -1,63 +1,27 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { config, cars } from 'config';
-import { CarTableHeader } from 'car-table-header';
-import { CarTable } from 'car-table';
-import { CarForm } from 'car-form';
+const state = 0;
+const actions = [
+	{type:"INCREMENT", amt: 1},
+	{type:"INCREMENT", amt: 2},
+	{type:"INCREMENT", amt: 3},
+	{type:"INCREMENT", amt: 4},
+	{type:"INCREMENT", amt: 5},
+	{type:"INCREMENT", amt: 6}
+];
 
-class CarTool extends React.Component {
-	constructor(props) {
-		super(props);
-		let state = {
-			cars: this.props.cars
-		};
-		this.showForm = false;
-		this.state = state;
-		this.onAddCar = this.onAddCar.bind(this);
-		this.onAddButtonClick = this.onAddButtonClick.bind(this);
-		this.config = Object.assign({},
-			this.props.config,
-			{
-				keys: this.props.config.fields.map(field=>field['key']),
-				labels: this.props.config.fields.map(field=>field['label']),
-				placeholders: this.props.config.fields.map(field=>field['placeholder'])
-			});
-	}
-	onAddCar(newCar) {
-		this.state.cars.push(newCar);
-		this.setState(this.state);
-		this.switchMode();
-	}
-	onAddButtonClick(e) {
-		console.log(e);
-		this.switchMode();
-	}
-	switchMode() {
-		let newShowForm = !this.state.showForm;
-		this.setState({
-			showForm: newShowForm	
-		});
-	}
-	render() {
-		this.state = this.state;
-		let view = null;
-		console.log(this.state.showForm)
-		if(this.state.showForm) {
-			view = <div>
-					
-					<CarForm config={this.config} onAddCar={this.onAddCar}></CarForm>
-				</div>
-		} else {
-			view = <div>
-					<CarTable cars={this.state.cars} config={this.config}></CarTable>
-					<button type="text" onClick={this.onAddButtonClick}>Add Car</button>
-				</div>
-		}
-		return <div>
-				<CarTableHeader headerText="A Table of Cars"></CarTableHeader>
-				{view}
-			</div>
+const action = {
+	type: 'INCREMENT',
+	amt: 1
+}
+
+const reducer = (state, action) => {
+	switch(action.type) {
+		case "INCREMENT":
+			return state + action.amt;
+		case "DECREMENT":
+			return state - action.amt;
+		default:
+			return state;
 	}
 }
 
-ReactDOM.render(<CarTool cars={cars} config={config} />, document.querySelector('cars-app'));
+console.log(actions.reduce(reducer,0));
