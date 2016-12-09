@@ -49,6 +49,26 @@
       "size": "tiny",
       "quantity": 10,
       "ownerId": 3
+    },
+    {
+      "type": "yeah",
+      "id": 5
+    },
+    {
+      "type": "yeah",
+      "id": 6
+    },
+    {
+      "type": "yeah",
+      "id": 7
+    },
+    {
+      "type": "yeah",
+      "id": 8
+    },
+    {
+      "type": "yeah",
+      "id": 9
     }
   ],
   "people": [
